@@ -164,6 +164,32 @@ runs:
         set -euo pipefail
         bash "$GITHUB_WORKSPACE/.github/actions/susfs/bakasu_compat/apply.sh" BakaSU "${{ inputs.version }}" "${{ inputs.sublevel }}"
 
+    - name: Declare priority uid filter config for SukiSU-Ultra
+      # SUSFS gki-android13-5.15 tip guards the priority uid filter block
+      # behind CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER (fs/susfs.c 1376-1805,
+      # susfs.h 244-247), but SukiSU-Ultra's Kconfig does not declare the
+      # symbol while its kernel calls the filter APIs unconditionally
+      # (commit a864d15a). Without the symbol the guarded susfs.c block is
+      # compiled out -> implicit declarations in pkg_observer.c/dispatch.c
+      # plus unused cred-switch statics, -Werror (run 41353908923).
+      if: inputs.enabled == 'true' && inputs.root_flavor == 'sukisu-ultra'
+      shell: bash
+      working-directory: ${{ github.workspace }}/kernel
+      run: |
+        set -euo pipefail
+        F="SukiSU-Ultra/kernel/Kconfig"
+        if [ ! -f "$F" ]; then
+          echo "ERROR: $F not found" >&2
+          exit 1
+        fi
+        if grep -q 'config KSU_SUSFS_PRIORITY_UID_FILTER' "$F"; then
+          echo "priority uid filter config already declared in $F"
+          exit 0
+        fi
+        printf '\nconfig KSU_SUSFS_PRIORITY_UID_FILTER\n\tbool "Enable to allow adding user-defined uids that will be hidden from getpriority/setpriority/ioprio_get/ioprio_set syscall"\n\tdepends on KSU_SUSFS\n\tdefault y\n\thelp\n\t  - Allow hiding user-defined uids from syscalls like getpriority/setpriority/ioprio_get/ioprio_set.\n\t  - Effective on all processes with uid >= 10000.\n' >> "$F"
+        echo "Declared KSU_SUSFS_PRIORITY_UID_FILTER in $F"
+        grep -A3 'config KSU_SUSFS_PRIORITY_UID_FILTER' "$F"
+
     - name: Enable SUSFS Kernel Configs
       if: inputs.enabled == 'true'
       uses: ./.github/actions/susfs-config
