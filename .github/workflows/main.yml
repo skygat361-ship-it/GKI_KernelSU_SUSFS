@@ -51,7 +51,7 @@ on:
       brand_name:
         description: "Kernel Branding (empty = stock version string)"
         type: string
-        default: Wild
+        default: ""
       keep_kmi:
         description: "Keep stock KMI generation suffix in kernel version (fix #265)"
         type: boolean
@@ -361,7 +361,7 @@ jobs:
           # susfs-off finasu builds are rejected in build.yml.
           emit finasu_commit "$FINASU_COMMIT"
           # KowSU has no SUSFS support, so it always tracks latest on master
-          # (it can only ever run with SUSFS off — enforced below).
+          # (it can only ever run with SUSFS off â€” enforced below).
           KOWSU_COMMIT="$(resolve_sha https://github.com/KOWX712/KernelSU.git refs/heads/master)"
           emit kowsu_commit "$KOWSU_COMMIT"
           if [ "$SCHED_SUSFS" = "true" ]; then
@@ -375,7 +375,7 @@ jobs:
           }
 
           # On 'schedule' there are no inputs, so the default must be the exact
-          # label the "All" arm matches below — a bare 'All' fell through to *)
+          # label the "All" arm matches below â€” a bare 'All' fell through to *)
           # and failed the whole job, yet the manager step's All* glob still
           # matched, so the two steps disagreed. Keep these in sync.
           case "${{ inputs.root_flavor || 'All (KernelSU-Next + KernelSU + BakaSU)' }}" in
@@ -401,7 +401,7 @@ jobs:
               ;;
             FinaSU)
               if [ "${{ inputs.use_susfs }}" = "false" ]; then
-                echo "ERROR: FinaSU requires SUSFS — re-run with SUSFS on." >&2
+                echo "ERROR: FinaSU requires SUSFS â€” re-run with SUSFS on." >&2
                 exit 1
               fi
               echo "root_flavor=finasu" >> "$GITHUB_OUTPUT"
@@ -410,7 +410,7 @@ jobs:
               ;;
             KowSU)
               if [ "${{ inputs.use_susfs }}" = "true" ]; then
-                echo "ERROR: KowSU does not work together with SUSFS — re-run with SUSFS off." >&2
+                echo "ERROR: KowSU does not work together with SUSFS â€” re-run with SUSFS off." >&2
                 exit 1
               fi
               echo "root_flavor=kowsu" >> "$GITHUB_OUTPUT"
@@ -650,7 +650,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -682,7 +682,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -714,7 +714,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -746,7 +746,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -778,7 +778,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -810,7 +810,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -842,7 +842,7 @@ jobs:
       ksu_branch: ${{ needs.resolve-sources.outputs.kernelsu_commit }}
       anykernel3_commit: ${{ needs.resolve-sources.outputs.anykernel3_commit }}
       droidspaces_commit: ${{ needs.resolve-sources.outputs.droidspaces_commit }}
-      brand_name: ${{ inputs.brand_name || 'Wild' }}
+      brand_name: ${{ inputs.brand_name }}
       keep_kmi: ${{ inputs.keep_kmi || false }}
       os_patch_level: ${{ inputs.os_patch_level || 'All' }}
       allow_version_mismatch: ${{ inputs.allow_version_mismatch || false }}
@@ -1131,10 +1131,10 @@ jobs:
               FAMILY_LINKS="${FAMILY_LINKS}<li><a href=\"${TME_URL}\">${famname}</a></li>"
               # One button row per family card, for the combined card
               # (JSON for the cloud path, rich markup for the rich path).
-              ROW=$(jq -nc --arg t "🔨 ${famname}" --arg u "${TME_URL}" \
+              ROW=$(jq -nc --arg t "ðŸ”¨ ${famname}" --arg u "${TME_URL}" \
                 '[{text:$t,url:$u}]' 2>/dev/null || true)
               [ -n "$ROW" ] && FAMILY_BTN_ROWS="${FAMILY_BTN_ROWS}${ROW},"
-              RICH_BTN_ROWS="${RICH_BTN_ROWS}<tg-button-row><tg-button type=\"url\" style=\"primary\" url=\"${TME_URL}\">🔨 ${famname}</tg-button></tg-button-row>"$'\n'
+              RICH_BTN_ROWS="${RICH_BTN_ROWS}<tg-button-row><tg-button type=\"url\" style=\"primary\" url=\"${TME_URL}\">ðŸ”¨ ${famname}</tg-button></tg-button-row>"$'\n'
             fi
             # Pin the digest in its topic so the latest build stays on top.
             if [ -n "$MID" ]; then
@@ -1156,13 +1156,13 @@ jobs:
           if [ "${RELEASE_TYPE}" = "Release" ] && [ -n "$TG_TEST_CHAT" ] && [ -n "$TG_TEST_TOPIC" ] && [ -n "$FAMILY_LINKS" ]; then
             # Release-only card: no testing warning is ever shown here.
             ALL_ROW=$(jq -nc --arg u "${NIGHTLY_URL}" \
-              '[{text:"📦 All artifacts",url:$u}]' 2>/dev/null || true)
+              '[{text:"ðŸ“¦ All artifacts",url:$u}]' 2>/dev/null || true)
             TEST_BTN_ROWS="${FAMILY_BTN_ROWS}${ALL_ROW}"
             TRESP=""
             if [ -n "${TG_API:-}" ]; then
               # Rich combined card (same dialect as the family cards).
-              RICH_ALL="<tg-button-row><tg-button type=\"url\" style=\"success\" url=\"${NIGHTLY_URL}\">📦 All artifacts</tg-button></tg-button-row>"
-              RICH_MSG=$(printf '# 👋 New Release\n\n**Wild Kernels** — %s\n\nRun: [#%s](%s)\n\n%s\n\n%s' \
+              RICH_ALL="<tg-button-row><tg-button type=\"url\" style=\"success\" url=\"${NIGHTLY_URL}\">ðŸ“¦ All artifacts</tg-button></tg-button-row>"
+              RICH_MSG=$(printf '# ðŸ‘‹ New Release\n\n**Wild Kernels** â€” %s\n\nRun: [#%s](%s)\n\n%s\n\n%s' \
                 "${{ github.ref_name }}" "${RUN_ID}" "${RUN_URL}" \
                 "${RICH_BTN_ROWS}" "${RICH_ALL}")
               TBODY=$(jq -nc --arg chat "$TG_TEST_CHAT" --arg topic "$TG_TEST_TOPIC" --arg md "$RICH_MSG" \
@@ -1179,7 +1179,7 @@ jobs:
             fi
             if [ -z "$TRESP" ]; then
               COMBINED=$(printf '%s' \
-                "👋 <b>Hello, new release here:</b><br>🔨 <b>Wild Kernels</b> — <code>${{ github.ref_name }}</code><br><b>Run</b>: <a href=\"${RUN_URL}\">#${RUN_ID}</a><br><ul>${FAMILY_LINKS}</ul>")
+                "ðŸ‘‹ <b>Hello, new release here:</b><br>ðŸ”¨ <b>Wild Kernels</b> â€” <code>${{ github.ref_name }}</code><br><b>Run</b>: <a href=\"${RUN_URL}\">#${RUN_ID}</a><br><ul>${FAMILY_LINKS}</ul>")
               MK=( )
               if [ -n "$TEST_BTN_ROWS" ]; then
                 TEST_BUTTONS=$(jq -nc --argjson rows "[${TEST_BTN_ROWS%,}]" \
@@ -1778,7 +1778,7 @@ jobs:
           # or a concurrent run that computed the same tag). Refresh its notes
           # so a re-run heals stale bodies instead of leaving them behind.
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
-            echo "Release $TAG_NAME already exists — refreshing notes and uploading into it."
+            echo "Release $TAG_NAME already exists â€” refreshing notes and uploading into it."
             gh release edit "$TAG_NAME" --notes-file release_body.md
           else
             create_args=(--title "$RELEASE_TITLE" --notes-file release_body.md)
