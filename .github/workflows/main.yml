@@ -298,10 +298,15 @@ jobs:
             [susfs_commit_android16_6_12]="519c86c5d8ad3832ff4a2e1a81dc1b81076f1693"
           )
           # SukiSU-Ultra keeps its own SUSFS pin set too (same starting values).
+          # android13_5_15 bumped to gki-android13-5.15 tip (d5df1d93): SukiSU
+          # builtin tip's sepolicy.c calls susfs_add_sus_type /
+          # susfs_add_sus_avd_allowed_by_type, which only exist from the
+          # selinux_hide refactor (be78a2a) onward. Old pin f3ceb5d0 -> undefined
+          # symbols at final vmlinux link. Tip also brings priority uid filter.
           declare -A PIN_SUSFS_SUKISU_ULTRA=(
             [susfs_commit_android12_5_10]="eb95da080c76724c4962d0c62e9af3be37d9d439"
             [susfs_commit_android13_5_10]="a9bc1852785cc5288b587169752c74353b2110d6"
-            [susfs_commit_android13_5_15]="f3ceb5d0463e02570e75fb364ff45840d6edd923"
+            [susfs_commit_android13_5_15]="d5df1d937361530787fafa920dea3a9b6dc8ebef"
             [susfs_commit_android14_5_15]="ab5ccf718887c173234b01dccf853a9044efafcf"
             [susfs_commit_android14_6_1]="8b25990241174fe88d2131a9929e36b5e5ffb1d0"
             [susfs_commit_android15_6_6]="0606e19afae93ffc88e53883dbf3cfced62a7b59"
