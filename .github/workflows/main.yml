@@ -259,10 +259,12 @@ jobs:
           # `fake_state` and will fail to link with latest BakaSU; 6.6/6.12 are
           # unaffected. Watch those 5 families for build failures.
           PIN_BAKASU="d5e9e025b8b49155f8014684d64c91742b465f65"
-          # SukiSU-Ultra: builtin tip (b5917072, 2026-10-27, "feat(extension):
-          # publish capabilities and ABI from the kernel"); defines fake_state
-          # itself, calls the susfs_def.h no_su API -> OK on tips.
-          PIN_SUKISU_ULTRA="b59170724cdc05bf5dee8d8a8b182c5f1ddd60e3"
+          # SukiSU-Ultra: builtin tip (1cfa5734, 2026-11-01, "kernel: Fix mount_hide
+          # crash and support pre-5.10 kernels"); builtin branch = main-lineage pin
+          # + 10 commits incl. SELinux hide policy parsing fix (85d3b0483d,
+          # tiann/KernelSU#3936) and clang GKI build fix (b16e899a). Main branch is
+          # LKM-only now; builtin is the maintained in-tree lineage for AK3 builds.
+          PIN_SUKISU_ULTRA="1cfa57340590971cba7521ed536da8ebbedc5f0a"
           # FinaSU: susfs-integrated fork of the tiann restructure; pin tracks
           # the susfs4ksu v2.3 ABI era its supercall dispatch is written against.
           # master tip be19eb90 (2026-10-25, "ksud: Add FinaSU Hide bootloader
