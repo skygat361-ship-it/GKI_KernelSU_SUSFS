@@ -194,6 +194,19 @@ runs:
       if: inputs.enabled == 'true'
       uses: ./.github/actions/susfs-config
 
+    - name: Quiet SUSFS logging for SukiSU-Ultra
+      # CONFIG_KSU_SUSFS_ENABLE_LOG=y makes every hide operation print a line
+      # to dmesg.  The dispatcher's CMD_SUSFS_ENABLE_LOG case and the
+      # SUSFS_LOGI/LOGE macro bodies are both wrapped in
+      # #ifdef CONFIG_KSU_SUSFS_ENABLE_LOG (susfs.c:457-461, susfs.h:119-124),
+      # so switching the symbol off is link-safe and removes a kernel-log
+      # trail that no stealth build wants.
+      if: inputs.enabled == 'true' && inputs.root_flavor == 'sukisu-ultra'
+      uses: ./.github/actions/set-kernel-config
+      with:
+        config_list: |
+          CONFIG_KSU_SUSFS_ENABLE_LOG=n
+
     - name: Apply SUSFS Patches
       if: inputs.enabled == 'true'
       uses: ./.github/actions/susfs-patches
@@ -287,3 +300,24 @@ runs:
             echo "[+] Stripped static from $f"
           fi
         done
+
+    - name: Align every kernel-identity surface with susfs_spoof_uname
+      # CONFIG_KSU_SUSFS_SPOOF_UNAME rewrites only the newuname(2) reply: it
+      # spoofs a stack copy of utsname() and copy_to_user()s it back, leaving
+      # init_uts_ns untouched.  fs/proc/version.c and the osrelease/version
+      # sysctls serialize the namespace directly, so they kept printing the
+      # real build string (with its builder and compiler tail) to any
+      # unprivileged reader — a mismatch tell as loud as no spoof at all.
+      # Patch both to read the same susfs buffer behind the same static
+      # branch, so armed and disarmed states are each self-consistent.
+      if: inputs.enabled == 'true' && inputs.root_flavor == 'sukisu-ultra'
+      shell: bash
+      working-directory: ${{ github.workspace }}/kernel/common
+      run: |
+        set -euo pipefail
+        python3 "$GITHUB_WORKSPACE/.github/scripts/apply_proc_identity.py" \
+          "${{ github.workspace }}/kernel/common"
+        echo "[-] /proc/version:"
+        sed -n '1,45p' fs/proc/version.c
+        echo "[-] osrelease/version sysctl block:"
+        grep -n -A6 'CONFIG_KSU_SUSFS_SPOOF_UNAME' kernel/utsname_sysctl.c
